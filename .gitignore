@@ -46,3 +46,5 @@ __pycache__/
 
 # Managed dependencies folder
 ManagedDependencies/
+
+.DS_Store

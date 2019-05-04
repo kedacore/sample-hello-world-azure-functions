@@ -133,6 +133,13 @@ You should see your function running locally fired correctly immediately
 ```cli
 func kubernetes install --namespace keda
 ```
+To confirm that KEDA has successfully installed you can run the following command and should see the following CRD.
+
+```cli
+kubectl get customresourcedefinition
+NAME                        AGE
+scaledobjects.keda.k8s.io   2h
+```
 
 #### 9. Deploy Function App to KEDA
 

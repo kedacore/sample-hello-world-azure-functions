@@ -4,7 +4,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
 
 ## Pre-requisites
 
-* [Azure Function Core Tools](https://github.com/azure/azure-functions-core-tools#installing)
+* [Azure Function Core Tools v2](https://github.com/azure/azure-functions-core-tools#installing)
 * An Azure Subscription (to host the storage queue).  A free account works great - [https://azure.com/free](http://azure.com/free)
 * Kubernetes and `kubectl`
 * Docker and a Docker registry

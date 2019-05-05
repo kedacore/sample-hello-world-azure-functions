@@ -95,7 +95,7 @@ Finally, open the `QueueTrigger/function.json` file and set the `connection` set
 
 #### 6. Enable the storage queue bundle on the function runtime
 
-Replace the `host.json` content with the following:
+Replace the `host.json` content with the following.  This [pulls in the extensions to the function runtime](https://docs.microsoft.com/azure/azure-functions/functions-bindings-register#local-development-with-azure-functions-core-tools-and-extension-bundles) like Azure Storage Queues support.
 
 **host.json**
 ```json
@@ -157,13 +157,13 @@ Initially after deploy and with an empty queue you should see 0 pods.
 kubectl get deploy
 ```
 
-Add a queue message to the queue (using the Storage Explorer shown in step 7 above).  KEDA will detect the event and add a pod.
+Add a queue message to the queue (using the Storage Explorer shown in step 7 above).  KEDA will detect the event and add a pod.  By default the polling interval set is 30 seconds on the `ScaledObject` resource, so it may take up to 30 seconds for the queue message to be detected and activate your function.  This can be [adjusted on the `ScaledObject` resource](https://github.com/kedacore/keda/wiki/ScaledObject-spec).
 
 ```cli
 kubectl get pods -w
 ```
 
-The queue message will be consumed.  New queue messages will be consumed and if many queue messages are added and on backlog more pods will be scaled out.  After all messages are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
+The queue message will be consumed.  You can validate the message was consumed by using `kubectl logs` on the activated pod.  New queue messages will be consumed and if enough queue messages are added the function will autoscale.  After all messages are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
 
 ## Cleaning up resources
 

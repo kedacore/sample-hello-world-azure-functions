@@ -143,7 +143,7 @@ scaledobjects.keda.k8s.io   2h
 
 #### 9a. Deploy Function App to KEDA (standard)
 
-You can then deploy your function to Kubernetes.  If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](#9b.-deploy-function-app-to-keda-(virtual-nodes))
+You can then deploy your function to Kubernetes.  If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](#9b-deploy-function-app-to-keda-virtual-nodes)
 
 ```cli
 func kubernetes deploy --name hello-keda --registry <docker-user-id>

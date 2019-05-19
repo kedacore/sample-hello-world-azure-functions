@@ -166,7 +166,7 @@ Open and modify the created `deploy.yaml` to tolerate scheduling onto any nodes,
 spec:
       containers:
       - name: hello-keda
-        image: <your-docker-registry>/hello-keda
+        image: <your-docker-user-id>/hello-keda
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: QueueTrigger
@@ -177,8 +177,11 @@ spec:
       - operator: Exists
 ```
 
-Apply the deployment to deploy the function app.
+Build and deploy the container image, and apply the deployment to your cluster.
 ```cli
+docker build -t <your-docker-user-id>/hello-keda .
+docker push <your-docker-user-id>/hello-keda
+
 kubectl apply -f deploy.yaml
 ```
 

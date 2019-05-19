@@ -6,7 +6,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
 
 * [Azure Function Core Tools v2](https://github.com/azure/azure-functions-core-tools#installing). Makes sure the version is greater than: 2.7.1149
 * An Azure Subscription (to host the storage queue).  A free account works great - [https://azure.com/free](http://azure.com/free)
-* Kubernetes cluster (can be [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal), GKE, EKS, OpenShift etc.) and [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) pointing to your Kubernetes cluster (for [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough#connect-to-the-cluster))
+* Kubernetes cluster (can be [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal), GKE, EKS, OpenShift etc.) and [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) pointing to your Kubernetes cluster (for [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough#connect-to-the-cluster)).  NOTE: If you want to use KEDA with Azure Virtual Nodes, be sure to [enable Virtual Nodes](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-portal) at create.
 * Docker and a Docker registry
 
 ## Tutorial
@@ -141,13 +141,46 @@ NAME                        AGE
 scaledobjects.keda.k8s.io   2h
 ```
 
-#### 9. Deploy Function App to KEDA
+#### 9a. Deploy Function App to KEDA (standard)
+
+You can then deploy your function to Kubernetes.  If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](#9b.-deploy-function-app-to-keda-(virtual-nodes))
 
 ```cli
 func kubernetes deploy --name hello-keda --registry <docker-user-id>
 ```
 
 This will build the docker container, push it to the specified registry, and deploy it to Kubernetes. You can see the actual generated deployment with the `--dry-run` flag.
+
+#### 9b. Deploy Function App to KEDA (Virtual Nodes)
+
+To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes.
+
+Generate a deployment yaml for the function.
+```cli
+func kubernetes deploy --name hello-keda --registry <docker-user-id> --javascript --dry-run > deploy.yaml
+```
+
+Open and modify the created `deploy.yaml` to tolerate scheduling onto any nodes, including virtual.
+
+```yaml
+spec:
+      containers:
+      - name: hello-keda
+        image: <your-docker-registry>/hello-keda
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: QueueTrigger
+        envFrom:
+        - secretRef:
+            name: hello-keda
+      tolerations:
+      - operator: Exists
+```
+
+Apply the deployment to deploy the function app.
+```cli
+kubectl apply -f deploy.yaml
+```
 
 #### 10. Add a queue message and validate the function app scales with KEDA
 

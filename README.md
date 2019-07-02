@@ -55,15 +55,18 @@ az storage queue create -n js-queue-items --connection-string $CONNECTION_STRING
 
 #### 5. Update the function metadata with the storage account info
 
-Open the `hello-keda` directory in an editor.  We'll need to update the connection string info for the queue trigger, and make sure the queue trigger capabilities are installed.
+We'll need to update the connection string info for the queue trigger in `local.settings.json` in  the `hello-keda` directory and make sure the queue trigger capabilities are installed, which still has the local debug connection string settings.  
 
-Copy the current storage account connection string (HINT: don't include the `"`)
+Copy the current storage account connection string and replace the EXISTING `{AzureWebJobsStorage}` value with the connection string value.
+
+  > Replace `<storage-name>` with the name of your storage account.
 
 ```cli
-az storage account show-connection-string --name <storage-name> --query connectionString
+CONNECTION_STRING=$(az storage account show-connection-string --name <storage-name> --query connectionString --output tsv)
+func settings add AzureWebJobsStorage $CONNECTION_STRING
 ```
 
-Open `local.settings.json` which has the local debug connection string settings.  Replace the `{AzureWebJobsStorage}` with the connection string value:
+Your `local.settings.json` should now look like this:
 
 **local.settings.json**
 ```json
@@ -76,7 +79,7 @@ Open `local.settings.json` which has the local debug connection string settings.
 }
 ```
 
-Finally, open the `QueueTrigger/function.json` file and set the `connection` setting value to `AzureWebJobsStorage`.  This tells the function to pull the connection string from the `AzureWebJobsStorage` key we set above.
+Finally, open the `QueueTrigger/function.json` file in an editor and set the `connection` setting value to `AzureWebJobsStorage`.  This tells the function to pull the connection string from the `AzureWebJobsStorage` key we set above.
 
 **function.json**
 ```json
@@ -95,7 +98,7 @@ Finally, open the `QueueTrigger/function.json` file and set the `connection` set
 
 #### 6. Enable the storage queue bundle on the function runtime
 
-Replace the `host.json` content with the following.  This [pulls in the extensions to the function runtime](https://docs.microsoft.com/azure/azure-functions/functions-bindings-register#local-development-with-azure-functions-core-tools-and-extension-bundles) like Azure Storage Queues support.
+Replace the `host.json` content with the following:
 
 **host.json**
 ```json
@@ -107,6 +110,8 @@ Replace the `host.json` content with the following.  This [pulls in the extensio
     }
 }
 ```
+
+This [pulls in the extensions to the function runtime](https://docs.microsoft.com/azure/azure-functions/functions-bindings-register#local-development-with-azure-functions-core-tools-and-extension-bundles) like Azure Storage Queues support.
 
 #### 7. Debug and test the function locally (optional)
 
@@ -122,13 +127,17 @@ Go to your Azure Storage account in the [Azure Portal](https://portal.azure.com)
 You should see your function running locally fired correctly immediately
 
 ```cli
-[5/1/19 6:00:53 AM] Executing 'Functions.QueueTrigger' (Reason='New queue message detected on 'js-queue-items'.', Id=2beeca56-4c7a-4af9-b15a-86d896d55a92)
-[5/1/19 6:00:53 AM] Trigger Details: MessageId: 60c80a55-e941-4f78-bb93-a1ef006c3dc5, DequeueCount: 1, InsertionTime: 5/1/19 6:00:53 AM +00:00
-[5/1/19 6:00:53 AM] JavaScript queue trigger function processed work item Hello KEDA
-[5/1/19 6:00:53 AM] Executed 'Functions.QueueTrigger' (Succeeded, Id=2beeca56-4c7a-4af9-b15a-86d896d55a92)
+[12/1/19 6:00:53 AM] Executing 'Functions.QueueTrigger' (Reason='New queue message detected on 'js-queue-items'.', Id=2beeca56-4c7a-4af9-b15a-86d896d55a92)
+[12/1/19 6:00:53 AM] Trigger Details: MessageId: 60c80a55-e941-4f78-bb93-a1ef006c3dc5, DequeueCount: 1, InsertionTime: 5/1/19 6:00:53 AM +00:00
+[12/1/19 6:00:53 AM] JavaScript queue trigger function processed work item Hello KEDA
+[12/1/19 6:00:53 AM] Executed 'Functions.QueueTrigger' (Succeeded, Id=2beeca56-4c7a-4af9-b15a-86d896d55a92)
 ```
 
+Press Ctrl+C to shut down.
+
 #### 8. Install KEDA
+
+  > Make sure that `kubectl` has the current context set to the Kubernetes cluster you will be installing KEDA onto.
 
 ```cli
 func kubernetes install --namespace keda

@@ -1,5 +1,5 @@
 data:
-  AzureWebJobsStorage: ##AzureStorageAccountConnection##
+  AzureWebJobsStorage: #{AzureStorageAccountConnection}#
   FUNCTIONS_WORKER_RUNTIME: bm9kZQ==
 apiVersion: v1
 kind: Secret

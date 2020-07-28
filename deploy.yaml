@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: hello-keda
-        image: kedaaksdemo02.azurecr.io/sjwaight/sample-hello-world-azure-functions
+        image: kedaaksdemo02.azurecr.io/sjwaightnodefunction
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: QueueTrigger

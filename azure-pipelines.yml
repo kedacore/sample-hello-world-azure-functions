@@ -39,7 +39,7 @@ stages:
           $(tag)
           latest
     - task: PublishPipelineArtifact@1
+      displayName: Upload deploy.yaml file for Release
       inputs:
-        targetPath: '$(Pipeline.Workspace)'
-        artifact: 'deploy.yaml'
+        targetPath: 'deploy.yaml'
         publishLocation: 'pipeline'

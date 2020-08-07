@@ -130,7 +130,7 @@ You should see your function running locally fired correctly immediately
 
 #### 8. Install KEDA
 
-[Follow the instructions](https://keda.sh/deploy/) to deploy KEDA in your cluster.
+[Follow the instructions](https://keda.sh/docs/1.5/deploy/) to deploy KEDA in your cluster.
 
 To confirm that KEDA has successfully installed you can run the following command and should see the following CRD.
 

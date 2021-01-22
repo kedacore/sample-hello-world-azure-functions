@@ -149,7 +149,8 @@ First log in to docker from the command line with your user Id and password
 ```cli
 docker login
 ```
-Make sure you have created a private repo in docker.io to which you will deploy.
+Make sure you have created a private repo in docker.io to which your container image will be pushed.
+
 ```cli
 func kubernetes deploy --name hello-keda --registry <docker-user-id>
 ```

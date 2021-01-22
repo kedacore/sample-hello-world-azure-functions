@@ -4,7 +4,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
 
 ## Pre-requisites
 
-* [Azure Function Core Tools v2](https://github.com/azure/azure-functions-core-tools#installing). Makes sure the version is greater than: 2.7.1149
+* [Azure Function Core Tools v3](https://github.com/azure/azure-functions-core-tools#installing). Makes sure the version is greater than: 3.0.3216
 * An Azure Subscription (to host the storage queue).  A free account works great - [https://azure.com/free](http://azure.com/free)
 * Kubernetes cluster (can be [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal), GKE, EKS, OpenShift etc.) and [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) pointing to your Kubernetes cluster (for [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough#connect-to-the-cluster)).  NOTE: If you want to use KEDA with Azure Virtual Nodes, be sure to [enable Virtual Nodes](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-portal) at create.
 * Docker and a Docker registry
@@ -130,20 +130,26 @@ You should see your function running locally fired correctly immediately
 
 #### 8. Install KEDA
 
-[Follow the instructions](https://keda.sh/deploy/) to deploy KEDA in your cluster.
+[Follow the instructions](https://keda.sh/docs/2.0/deploy/) to deploy KEDA in your cluster.
 
 To confirm that KEDA has successfully installed you can run the following command and should see the following CRD.
 
 ```cli
 kubectl get customresourcedefinition
-NAME                        AGE
-scaledobjects.keda.k8s.io   2h
+NAME                     AGE
+scaledobjects.keda.sh    2h
+scaledjobs.keda.sh       2h
 ```
 
 #### 9a. Deploy Function App to KEDA (standard)
 
-You can then deploy your function to Kubernetes.  If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](#9b-deploy-function-app-to-keda-virtual-nodes)
+You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](#9b-deploy-function-app-to-keda-virtual-nodes)
 
+First log in to docker from the command line with your user Id and password
+```cli
+docker login
+```
+Make sure you have created a private repo in docker.io to which you will deploy.
 ```cli
 func kubernetes deploy --name hello-keda --registry <docker-user-id>
 ```

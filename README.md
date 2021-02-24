@@ -48,7 +48,7 @@ You can use the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-c
 az group create -l westus -n hello-keda
 az storage account create --sku Standard_LRS --location westus -g hello-keda -n <storage-name>
 
-CONNECTION_STRING=$(az storage account show-connection-string --name <storage-name> --query connectionString)
+CONNECTION_STRING=$(az storage account show-connection-string --name <storage-name> --query connectionString -o tsv)
 
 az storage queue create -n js-queue-items --connection-string $CONNECTION_STRING
 ```
